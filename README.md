@@ -28,6 +28,11 @@ npx wrangler secret put DISCORD_WEBHOOK_URL
 npx wrangler secret put YOUTUBE_URL
 # プロンプトでURLを入力
 
+# YouTube URL (複数指定でランダム選択)
+npx wrangler secret put YOUTUBE_URLS
+# カンマ区切りで複数URL入力
+# 例: https://youtube.com/watch?v=xxx,https://youtube.com/watch?v=yyy
+
 # メンション設定（オプション）
 npx wrangler secret put MENTION_IDS
 # 例: user:123456789,role:987654321

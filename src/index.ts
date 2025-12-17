@@ -6,7 +6,8 @@
 
 export interface Env {
     DISCORD_WEBHOOK_URL: string;
-    YOUTUBE_URL: string;
+    YOUTUBE_URL?: string;
+    YOUTUBE_URLS?: string;
     MENTION_IDS?: string;
 }
 
@@ -32,12 +33,26 @@ function parseMentions(mentionIds: string | undefined): string {
 }
 
 /**
+ * YouTube URLをランダムに1つ選択
+ * YOUTUBE_URLS (カンマ区切り) を優先、なければ YOUTUBE_URL を使用
+ */
+function getRandomYoutubeUrl(env: Env): string {
+    const urls = env.YOUTUBE_URLS || env.YOUTUBE_URL || "";
+    const urlArray = urls.split(",").map(u => u.trim()).filter(u => u);
+    if (urlArray.length === 0) {
+        return "";
+    }
+    return urlArray[Math.floor(Math.random() * urlArray.length)];
+}
+
+/**
  * Discord Webhookにメッセージを送信
  */
 async function sendDiscordMessage(env: Env): Promise<Response> {
     const mentionText = parseMentions(env.MENTION_IDS);
     const mentionPart = mentionText ? `${mentionText} ` : "";
-    const message = `${mentionPart}早く来い\n${env.YOUTUBE_URL}`;
+    const youtubeUrl = getRandomYoutubeUrl(env);
+    const message = `${mentionPart}早く来い\n${youtubeUrl}`;
 
     const response = await fetch(env.DISCORD_WEBHOOK_URL, {
         method: "POST",
