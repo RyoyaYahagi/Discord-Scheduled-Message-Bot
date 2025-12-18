@@ -52,7 +52,7 @@ async function sendDiscordMessage(env: Env): Promise<Response> {
     const mentionText = parseMentions(env.MENTION_IDS);
     const mentionPart = mentionText ? `${mentionText} ` : "";
     const youtubeUrl = getRandomYoutubeUrl(env);
-    const message = `${mentionPart}早く来い\n${youtubeUrl}`;
+    const message = `${mentionPart}早く来い\n【今日の音MAD】\n${youtubeUrl}`;
 
     const response = await fetch(env.DISCORD_WEBHOOK_URL, {
         method: "POST",
