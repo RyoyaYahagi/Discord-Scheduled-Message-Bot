@@ -8,7 +8,5 @@ compatibility_date = "2024-01-01"
 crons = ["0 8 * * 1,3,4,5"]  # 月〜金の17:00 JST
 
 [vars]
-# これらは wrangler secret で設定することを推奨
-# DISCORD_WEBHOOK_URL = ""
-# YOUTUBE_URL = ""
-# MENTION_IDS = ""
+YOUTUBE_URLS = "https://youtu.be/zg-4vFHYAWM?si=_Yl4ZnYQ4Kv6TdxJ,https://youtu.be/UzkiLRom6J8?si=d6pM76ref6fOUepH,https://youtu.be/ZryfwS8CJ74?si=odBnnO3yedINoxU1,https://youtube.com/shorts/FbTBVk_IUhk?si=v2WUoCAhx4qfPJ7T"
+MENTION_IDS = "user:1220320884456161402"
