@@ -1,12 +1,18 @@
-# Discord Scheduled Message Bot (Cloudflare Workers版)
+# hayakukoi - Discord Scheduled Message Bot
 
-Cloudflare Workers + Cron Trigger + Discord Webhookを使った完全無料のスケジュールメッセージBot。
+Cloudflare Workers + Cron Trigger + Discord Webhook を使った完全無料のスケジュールメッセージBot。
+
+## 機能
+
+- 指定時刻に Discord へ自動メッセージ送信
+- 複数の YouTube URL からランダムに1つを選択
+- ユーザー/ロールへのメンション対応
 
 ## セットアップ
 
-### 1. Discord Webhook URLの取得
+### 1. Discord Webhook URL の取得
 
-1. Discordでサーバー設定 → 「連携サービス」→「ウェブフック」
+1. Discord でサーバー設定 → 「連携サービス」→「ウェブフック」
 2. 「新しいウェブフック」を作成
 3. 送信先チャンネルを選択
 4. 「ウェブフックURLをコピー」
@@ -19,26 +25,27 @@ npm install
 
 ### 3. シークレットの設定
 
+Cloudflare ダッシュボード、または CLI で設定：
+
 ```bash
-# Discord Webhook URL
 npx wrangler secret put DISCORD_WEBHOOK_URL
-# プロンプトでURLを入力
-
-# YouTube URL
-npx wrangler secret put YOUTUBE_URL
-# プロンプトでURLを入力
-
-# YouTube URL (複数指定でランダム選択)
-npx wrangler secret put YOUTUBE_URLS
-# カンマ区切りで複数URL入力
-# 例: https://youtube.com/watch?v=xxx,https://youtube.com/watch?v=yyy
-
-# メンション設定（オプション）
-npx wrangler secret put MENTION_IDS
-# 例: user:123456789,role:987654321
 ```
 
-### 4. スケジュールの設定
+### 4. 環境変数の設定
+
+`wrangler.toml` の `[vars]` セクションで設定：
+
+```toml
+[vars]
+# 複数URLをカンマ区切りで指定（ランダム選択）
+YOUTUBE_URLS = "https://youtu.be/xxx,https://youtu.be/yyy"
+
+# メンション設定
+# user:ユーザーID または role:ロールID
+MENTION_IDS = "user:123456789"
+```
+
+### 5. スケジュールの設定
 
 `wrangler.toml` の `crons` を編集：
 
@@ -46,7 +53,7 @@ npx wrangler secret put MENTION_IDS
 [triggers]
 # UTC時間で指定（JSTは UTC+9）
 # 17:00 JST = 08:00 UTC
-crons = ["0 8 * * 1,2,3,4,5"]  # 月〜金の17:00 JST
+crons = ["0 8 * * 1,3,4,5"]  # 月・水・木・金の17:00 JST
 ```
 
 **曜日の指定:**
@@ -60,23 +67,35 @@ crons = ["0 8 * * 1,2,3,4,5"]  # 月〜金の17:00 JST
 | 5    | 金   |
 | 6    | 土   |
 
-### 5. デプロイ
+### 6. デプロイ
 
 ```bash
 npm run deploy
 ```
 
-## ローカルテスト
+## テスト
+
+### 本番環境でテスト
+
+ブラウザで以下にアクセス：
+```
+https://hayakukoi.yhgry.workers.dev/test
+```
+
+### ローカルテスト
 
 ```bash
-# 開発サーバー起動
-npm run dev
-
-# Cronをテスト（別ターミナルで）
-curl "http://localhost:8787/__scheduled?cron=*+*+*+*+*"
-
-# または手動テスト
+npm run dev -- --remote
+# 別ターミナルで:
 curl "http://localhost:8787/test"
+```
+
+## メッセージ形式
+
+```
+@ユーザー 早く来い
+【今日の音MAD】
+https://youtu.be/xxx
 ```
 
 ## 無料枠
@@ -88,4 +107,3 @@ curl "http://localhost:8787/test"
 | 実行時間     | 10ms CPU時間 |
 
 毎日1回の送信なら余裕で無料枠内です。
-# hayakukoi
