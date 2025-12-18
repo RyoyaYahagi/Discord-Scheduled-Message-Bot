@@ -49,6 +49,11 @@ function getRandomYoutubeUrl(env: Env): string {
  * Discord Webhookにメッセージを送信
  */
 async function sendDiscordMessage(env: Env): Promise<Response> {
+    if (!env.DISCORD_WEBHOOK_URL) {
+        console.error("DISCORD_WEBHOOK_URL が設定されていません");
+        return new Response("Error: Webhook URL not configured", { status: 500 });
+    }
+
     const mentionText = parseMentions(env.MENTION_IDS);
     const mentionPart = mentionText ? `${mentionText} ` : "";
     const youtubeUrl = getRandomYoutubeUrl(env);
@@ -65,11 +70,11 @@ async function sendDiscordMessage(env: Env): Promise<Response> {
     });
 
     if (!response.ok) {
-        console.error(`Discord webhook failed: ${response.status}`);
+        console.error(`Discord Webhook送信失敗: ${response.status}`);
         return new Response(`Error: ${response.status}`, { status: 500 });
     }
 
-    console.log("Message sent successfully!");
+    console.log("メッセージ送信成功");
     return new Response("OK", { status: 200 });
 }
 
