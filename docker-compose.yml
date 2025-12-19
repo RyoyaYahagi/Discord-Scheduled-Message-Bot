@@ -1,0 +1,16 @@
+# Docker Compose設定ファイル
+services:
+  dev:
+    build: .
+    volumes:
+      # ソースコードをマウント（ホットリロード対応）
+      - .:/app
+      # node_modulesはコンテナ内のものを使用
+      - /app/node_modules
+    ports:
+      - "8787:8787"
+    # 対話モードで起動
+    stdin_open: true
+    tty: true
+    # 開発時はシェルで起動
+    command: /bin/bash
