@@ -8,5 +8,6 @@ compatibility_date = "2024-01-01"
 crons = ["0 8 * * 1,3,4,5"]  # 月〜金の17:00 JST
 
 [vars]
+YOUTUBE_CHANNEL_ID = "UCXcjvt8cOfwtcqaMeE7-hqA"
 YOUTUBE_URLS = "https://youtube.com/shorts/GcyntsniJno?si=dYDm89ESL8hNm90F,https://youtube.com/shorts/XV1QjC0ShxU?si=BKkH6zI9mEwiifua,https://youtu.be/zg-4vFHYAWM?si=_Yl4ZnYQ4Kv6TdxJ,https://youtu.be/UzkiLRom6J8?si=d6pM76ref6fOUepH,https://youtu.be/ZryfwS8CJ74?si=odBnnO3yedINoxU1,https://youtube.com/shorts/FbTBVk_IUhk?si=v2WUoCAhx4qfPJ7T"
 # MENTION_IDS と TEST_SECRET は wrangler secret で設定
