@@ -5,7 +5,8 @@ Cloudflare Workers + Cron Trigger + Discord Webhook を使った完全無料の�
 ## 機能
 
 - 指定時刻に Discord へ自動メッセージ送信
-- 複数の YouTube URL からランダムに1つを選択
+- **YouTube Data API** で指定チャンネルの最新動画を自動取得
+- API 失敗時は設定済み YouTube URL からランダムに選択（フォールバック）
 - ユーザー/ロールへのメンション対応
 
 ## セットアップ
@@ -17,19 +18,27 @@ Cloudflare Workers + Cron Trigger + Discord Webhook を使った完全無料の�
 3. 送信先チャンネルを選択
 4. 「ウェブフックURLをコピー」
 
-### 2. 依存関係のインストール
+### 2. YouTube Data API キーの取得
+
+1. [Google Cloud Console](https://console.cloud.google.com/) にアクセス
+2. プロジェクトを作成または選択
+3. 「APIとサービス」→「ライブラリ」→「YouTube Data API v3」を有効化
+4. 「認証情報」→「認証情報を作成」→「APIキー」で取得
+
+### 3. 依存関係のインストール
 
 ```bash
 npm install
 ```
 
-### 3. シークレットの設定
-
-Cloudflare ダッシュボード、または CLI で設定：
+### 4. シークレットの設定
 
 ```bash
 # Discord Webhook URL（必須）
 npx wrangler secret put DISCORD_WEBHOOK_URL
+
+# YouTube API キー（必須）
+npx wrangler secret put YOUTUBE_API_KEY
 
 # メンション設定（オプション）
 npx wrangler secret put MENTION_IDS
@@ -37,20 +46,24 @@ npx wrangler secret put MENTION_IDS
 
 # テストエンドポイント用シークレット（オプション）
 npx wrangler secret put TEST_SECRET
-# 任意の文字列を設定
 ```
 
-### 4. 環境変数の設定
+### 5. 環境変数の設定
 
 `wrangler.toml` の `[vars]` セクションで設定：
 
 ```toml
 [vars]
-# 複数URLをカンマ区切りで指定（ランダム選択）
+# 動画を取得する YouTube チャンネルID
+YOUTUBE_CHANNEL_ID = "UCXcjvt8cOfwtcqaMeE7-hqA"
+
+# フォールバック用 URL（API 失敗時に使用）
 YOUTUBE_URLS = "https://youtu.be/xxx,https://youtu.be/yyy"
 ```
 
-### 5. スケジュールの設定
+> **チャンネルIDの調べ方**: YouTube チャンネルページの URL `youtube.com/channel/UCxxxxxx` の `UCxxxxxx` 部分
+
+### 6. スケジュールの設定
 
 `wrangler.toml` の `crons` を編集：
 
@@ -61,7 +74,6 @@ YOUTUBE_URLS = "https://youtu.be/xxx,https://youtu.be/yyy"
 crons = ["0 8 * * 1,3,4,5"]  # 月・水・木・金の17:00 JST
 ```
 
-**曜日の指定:**
 | 数値 | 曜日 |
 | ---- | ---- |
 | 0    | 日   |
@@ -72,7 +84,7 @@ crons = ["0 8 * * 1,3,4,5"]  # 月・水・木・金の17:00 JST
 | 5    | 金   |
 | 6    | 土   |
 
-### 6. デプロイ
+### 7. デプロイ
 
 ```bash
 npm run deploy
@@ -82,7 +94,6 @@ npm run deploy
 
 ### 本番環境でテスト
 
-ブラウザで以下にアクセス（認証必須）：
 ```
 https://hayakukoi.yhgry.workers.dev/test?token=YOUR_TEST_SECRET
 ```
@@ -97,6 +108,14 @@ curl "http://localhost:8787/test?token=YOUR_TEST_SECRET"
 
 ## メッセージ形式
 
+**YouTube API 成功時:**
+```
+@ユーザー 早く来い
+【今日のSUSURU TV】
+https://www.youtube.com/watch?v=xxxxx
+```
+
+**フォールバック時:**
 ```
 @ユーザー 早く来い
 【今日の音MAD】
@@ -105,10 +124,10 @@ https://youtu.be/xxx
 
 ## 無料枠
 
-| 項目         | 制限         |
-| ------------ | ------------ |
-| リクエスト数 | 100,000/日   |
-| Cron Trigger | 5つまで      |
-| 実行時間     | 10ms CPU時間 |
+| 項目               | 制限          |
+| ------------------ | ------------- |
+| Workers リクエスト | 100,000/日    |
+| Cron Trigger       | 5つまで       |
+| YouTube API        | 10,000単位/日 |
 
 毎日1回の送信なら余裕で無料枠内です。
