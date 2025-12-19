@@ -9,6 +9,7 @@ export interface Env {
     YOUTUBE_URL?: string;
     YOUTUBE_URLS?: string;
     MENTION_IDS?: string;
+    TEST_SECRET?: string;
 }
 
 /**
@@ -103,6 +104,12 @@ export default {
         const url = new URL(request.url);
 
         if (url.pathname === "/test") {
+            // 認証チェック
+            const token = url.searchParams.get("token");
+            if (!env.TEST_SECRET || token !== env.TEST_SECRET) {
+                console.error("認証失敗: 無効なトークン");
+                return new Response("Unauthorized", { status: 401 });
+            }
             return await sendDiscordMessage(env);
         }
 

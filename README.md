@@ -28,7 +28,16 @@ npm install
 Cloudflare ダッシュボード、または CLI で設定：
 
 ```bash
+# Discord Webhook URL（必須）
 npx wrangler secret put DISCORD_WEBHOOK_URL
+
+# メンション設定（オプション）
+npx wrangler secret put MENTION_IDS
+# 例: user:123456789,role:987654321
+
+# テストエンドポイント用シークレット（オプション）
+npx wrangler secret put TEST_SECRET
+# 任意の文字列を設定
 ```
 
 ### 4. 環境変数の設定
@@ -39,10 +48,6 @@ npx wrangler secret put DISCORD_WEBHOOK_URL
 [vars]
 # 複数URLをカンマ区切りで指定（ランダム選択）
 YOUTUBE_URLS = "https://youtu.be/xxx,https://youtu.be/yyy"
-
-# メンション設定
-# user:ユーザーID または role:ロールID
-MENTION_IDS = "user:123456789"
 ```
 
 ### 5. スケジュールの設定
@@ -77,9 +82,9 @@ npm run deploy
 
 ### 本番環境でテスト
 
-ブラウザで以下にアクセス：
+ブラウザで以下にアクセス（認証必須）：
 ```
-https://hayakukoi.yhgry.workers.dev/test
+https://hayakukoi.yhgry.workers.dev/test?token=YOUR_TEST_SECRET
 ```
 
 ### ローカルテスト
@@ -87,7 +92,7 @@ https://hayakukoi.yhgry.workers.dev/test
 ```bash
 npm run dev -- --remote
 # 別ターミナルで:
-curl "http://localhost:8787/test"
+curl "http://localhost:8787/test?token=YOUR_TEST_SECRET"
 ```
 
 ## メッセージ形式
