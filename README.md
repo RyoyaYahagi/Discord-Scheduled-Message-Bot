@@ -1,4 +1,4 @@
-# hayakukoi - Discord Scheduled Message Bot
+# Discord Scheduled Message Bot
 
 Cloudflare Workers + Cron Trigger + Discord Webhook を使った完全無料のスケジュールメッセージBot。
 
