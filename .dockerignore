@@ -1,0 +1,24 @@
+# 依存関係（コンテナ内で npm ci するので不要）
+node_modules/
+
+# ビルド成果物
+dist/
+
+# Wrangler キャッシュ
+.wrangler/
+
+# Git
+.git/
+.gitignore
+
+# GitHub Actions
+.github/
+
+# ドキュメント
+README.md
+GEMINI.md
+
+# Docker関連（自己参照を避ける）
+Dockerfile
+docker-compose.yml
+.dockerignore
